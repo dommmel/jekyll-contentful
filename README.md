@@ -33,16 +33,18 @@ Configure in your _config.yml file
 
 ```yaml
 contentful:
-  access_token: 'YOUR_TOKEN'
-  space: 'SPACE'
+  preview: No 
+  production_access_token: 'YOUR_PRODUCTION_TOKEN'
+  preview_access_token: 'YOUR_PREVIEW_TOKEN'
+  space: 'YOUR_SPACE'
   content_types:
    - "First Content Type"
    - "Second Content Type"
   localization:
   - locale: en-US
-   url_prefix: "en"
+   url_prefix: ""
   - locale: de-DE
-   url_prefix: "de"
+   url_prefix: "de/"
 ```       
   
 #### Content Fields:
