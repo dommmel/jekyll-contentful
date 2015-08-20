@@ -1,10 +1,11 @@
-require "jekyll-contentful/version"
 require "jekyll"
 require "contentful"
+require "jekyll-contentful/version"
+require "jekyll-contentful/language_switcher_tag"
 
 module Jekyll
   class ContentfulEntryPage < Page
-    def initialize(site, fields, content_type_name, prefix)
+    def initialize(site, entry, content_type_name, prefix)
       
       @site = site
       @base = site.source
@@ -16,10 +17,13 @@ module Jekyll
       self.read_yaml(File.join(@base, '_layouts'), layout_filename)
 
       # stringify hash keys
-      fields = fields.inject({}){|x,(k,v)| x[k.to_s] = v; x}
+      fields = entry.fields.inject({}){|x,(k,v)| x[k.to_s] = v; x}
 
       # merge data
       self.data.merge!(fields)
+
+      self.data["contentful_id"] = entry.id
+      self.data["locale"] = entry.locale
 
       # If there is a title fields make it the url
       page_title_slug = Utils.slugify(self.data["title"] || "")
@@ -64,7 +68,7 @@ module Jekyll
         localization.each do |loc|
           entries = client.entries(content_type: content_type.id, locale: loc["locale"], limit: 1000)
           entries.each do |entry|
-            site.pages << ContentfulEntryPage.new(site, entry.fields, content_type_name, "#{loc['url_prefix']}") unless entry.fields.nil?
+            site.pages << ContentfulEntryPage.new(site, entry, content_type_name, "#{loc['url_prefix']}") unless entry.fields.nil?
           end
         end
 

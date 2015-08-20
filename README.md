@@ -42,11 +42,18 @@ contentful:
    - "Second Content Type"
   localization:
   - locale: en-US
-   url_prefix: ""
+    url_prefix: ""
+    lang: "English"
   - locale: de-DE
-   url_prefix: "de/"
+    url_prefix: "de/"
+    lang: "Deutsch"
 ```       
-  
+
+
+#### Language switcher
+you can use the tag ``{% language_switcher %}`` in your templates to insert a link to the translations of the current page.
+
+
 #### Content Fields:
 All Entry fields can be used inside the layout templates as {{ page.fieldname }}
   
