@@ -74,6 +74,7 @@ Now for every entry you can specify the languages you want to generate pages for
 
 #### Content Fields:
 All Entry fields can be used inside the layout templates as ``{{ page.fieldname }}``.
+The plugin adds two fields to pages generated from Contentful entries: ``{ page.contentful_id }}`` and ``{{ page.locale }}``.
   
 #### ULRs and Layouts: 
   
