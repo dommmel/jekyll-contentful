@@ -60,18 +60,22 @@ module Jekyll
         throw "Content_type \'#{content_type_name}\' does not exist." if content_type.nil? 
 
         
-        localization = site.config['contentful']['localization'] || [{locale: nil, url_prefix: ""}]      
-        
-        # Get all entries of content type
-
-
+        localization = site.config['contentful']['localization'] || [{locale: nil, url_prefix: ""}]
         localization.each do |loc|
+
           entries = client.entries(content_type: content_type.id, locale: loc["locale"], limit: 1000)
+
           entries.each do |entry|
-            site.pages << ContentfulEntryPage.new(site, entry, content_type_name, "#{loc['url_prefix']}") unless entry.fields.nil?
+              next if entry.fields.nil?
+              
+              pub_langs = entry.fields[site.config['contentful']['published_locales_field'].to_sym]
+
+              if pub_langs.nil? or pub_langs.map{|x| x.fields[:locale]}.include?(loc["locale"])
+                site.pages << ContentfulEntryPage.new(site, entry, content_type_name, "#{loc['url_prefix']}")
+              end
+               
           end
         end
-
 
       end
     end
