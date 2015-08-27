@@ -18,9 +18,7 @@ module Jekyll
 
       # stringify hash keys
       fields = entry.fields.inject({}){|x,(k,v)| x[k.to_s] = v; x}
-
-      # merge data
-      self.data.merge!(fields)
+      self.data['fields'] = fields
 
       self.data["contentful_id"] = entry.id
       self.data["locale"] = entry.locale
