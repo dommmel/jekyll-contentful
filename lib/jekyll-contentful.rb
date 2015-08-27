@@ -20,6 +20,9 @@ module Jekyll
       fields = entry.fields.inject({}){|x,(k,v)| x[k.to_s] = v; x}
       self.data['fields'] = fields
 
+      display_field = entry.content_type.resolve.display_field
+      self.data['title'] = fields[display_field] if display_field
+
       self.data["contentful_id"] = entry.id
       self.data["locale"] = entry.locale
 
