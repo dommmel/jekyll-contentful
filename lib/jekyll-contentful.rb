@@ -1,6 +1,7 @@
 require "jekyll"
 require "contentful"
 require "jekyll-contentful/version"
+require "jekyll-contentful/contentful-monkeypatch"
 require "jekyll-contentful/language_switcher_tag"
 
 module Jekyll
@@ -17,7 +18,7 @@ module Jekyll
       self.read_yaml(File.join(@base, '_layouts'), layout_filename)
 
       # stringify hash keys
-      fields = entry.fields.inject({}){|x,(k,v)| x[k.to_s] = v; x}
+      fields = Jekyll::Utils.stringify_hash_keys(entry.fields)
       self.data['contentful_fields'] = fields
 
       display_field = entry.content_type.resolve.display_field
@@ -60,19 +61,24 @@ module Jekyll
 
         throw "Content_type \'#{content_type_id}\' does not exist." if content_type.nil?
 
-        
         localization = site.config['contentful']['localization'] || [{locale: nil, url_prefix: ""}]      
         
         # Get all entries of content type
 
-
         localization.each do |loc|
           entries = client.entries(content_type: content_type_id, locale: loc["locale"], limit: 1000)
           entries.each do |entry|
-            site.pages << ContentfulEntryPage.new(site, entry, content_type.name, "#{loc['url_prefix']}") unless entry.fields.nil?
+
+            next if entry.fields.nil?
+
+            published_locales_field = site.config['contentful']['published_locales_field']
+            pub_langs = published_locales_field.nil? ? nil : entry.fields[published_locales_field.to_sym]
+
+            if pub_langs.nil? or pub_langs.map{|x| x.fields[:locale]}.include?(loc["locale"])
+              site.pages << ContentfulEntryPage.new(site, entry, content_type.name, "#{loc['url_prefix']}")
+            end
           end
         end
-
 
       end
     end
