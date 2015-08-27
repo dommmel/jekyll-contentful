@@ -53,11 +53,11 @@ module Jekyll
       )
 
       # Loop over all content types
-      site.config['contentful']['content_types'].each do |content_type_name|
-        # Get ID for content type name
-        content_type = client.content_types(name: content_type_name).first
+      site.config['contentful']['content_types'].each do |content_type_id|
+        # Get name for content type ID
+        content_type = client.content_types('sys.id' => content_type_id).first
 
-        throw "Content_type \'#{content_type_name}\' does not exist." if content_type.nil? 
+        throw "Content_type \'#{content_type_id}\' does not exist." if content_type.nil?
 
         
         localization = site.config['contentful']['localization'] || [{locale: nil, url_prefix: ""}]      
@@ -66,9 +66,9 @@ module Jekyll
 
 
         localization.each do |loc|
-          entries = client.entries(content_type: content_type.id, locale: loc["locale"], limit: 1000)
+          entries = client.entries(content_type: content_type_id, locale: loc["locale"], limit: 1000)
           entries.each do |entry|
-            site.pages << ContentfulEntryPage.new(site, entry, content_type_name, "#{loc['url_prefix']}") unless entry.fields.nil?
+            site.pages << ContentfulEntryPage.new(site, entry, content_type.name, "#{loc['url_prefix']}") unless entry.fields.nil?
           end
         end
 
