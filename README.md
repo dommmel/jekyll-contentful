@@ -55,7 +55,7 @@ you can use the tag ``{% language_switcher %}`` in your templates to insert a li
 
 
 #### Content Fields:
-All Entry fields can be used inside the layout templates as {{ page.fieldname }}
+All Entry fields can be used inside the layout templates as {{ page.contentful_fields.fieldname }}
   
 #### ULRs and Layouts: 
   
