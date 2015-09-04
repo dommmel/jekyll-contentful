@@ -77,13 +77,42 @@ Now for every entry you can specify the languages you want to generate pages for
 All Entry fields can be used inside the layout templates as {{ page.contentful_fields.fieldname }}.
 The plugin adds two more fields to pages generated from Contentful entries: ``{ page.contentful_id }}`` and ``{{ page.contentful_locale }}``.
 
-  
 #### ULRs and Layouts: 
   
 Let's say you have a content type named "Blog Post" with an entry that has its title field set to "Awesome Title".
 The plugin will generate a page using the "blog-post.html" layout at the url: /en/blog-post/awesome-title/index.html
 
 If no layout named "blog-post.html" can be found the plugin will fallback to use the "default.html" layout.
+
+## Minimal Layout Example
+
+the following example assumes a content type with two fields. A long text field named "body" and a short text field named "title".
+
+```liquid
+<!DOCTYPE html>
+<html>
+<body>
+  <header>
+    <div>
+      {% for p in site.pages %}
+        {% if p.title and page.contentful_locale == p.contentful_locale %}
+          {% if p.url == page.url %}
+            <span>{{ p.title }}</span>
+          {% else %}
+            <a href="{{ p.url | prepend: site.baseurl }}">{{ p.title }}</a>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </header>
+  <article>
+    <h1>{{ page.title }}</h1>
+    <p>{{ page.body | markdownify  }}</p>
+  </article>
+  {% language_switcher %}
+</body>
+</html>
+```
 
 
 ## License
