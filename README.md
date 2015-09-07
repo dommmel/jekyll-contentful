@@ -114,6 +114,7 @@ the following example assumes a content type with two fields. A long text field 
 </html>
 ```
 
+You can find a more comprehensive example over at [github.com/dommmel/jekyll-contentful-example](https://github.com/dommmel/jekyll-contentful-example).
 
 ## License
 
