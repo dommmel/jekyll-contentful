@@ -7,11 +7,11 @@ require "jekyll-contentful/language_switcher_tag"
 module Jekyll
   class ContentfulEntryPage < Page
     def initialize(site, entry, content_type_name, prefix)
-      
+
       @site = site
       @base = site.source
       @name = 'index.html'
-      
+
       content_type_slug = Utils.slugify content_type_name
 
       layout_filename = site.layouts.key?(content_type_slug) ? "#{content_type_slug}.html" : "default.html"
@@ -26,11 +26,12 @@ module Jekyll
 
       self.data["contentful_id"] = entry.id
       self.data["contentful_locale"] = entry.locale
-
+      self.data["contentful_content_type_name"] = content_type_name
+      
       # If there is a title fields make it the url
       page_title_slug = Utils.slugify(self.data["title"] || "")
       @dir = "/#{prefix}#{content_type_slug}/#{page_title_slug}"
-      
+
       self.process(@name)
     end
   end
@@ -43,7 +44,7 @@ module Jekyll
       if site.config['contentful']['preview']
         api_url = 'preview.contentful.com'
         access_token =  site.config['contentful']['preview_access_token']
-      else 
+      else
         api_url = 'cdn.contentful.com'
         access_token =  site.config['contentful']['production_access_token']
       end
@@ -61,8 +62,8 @@ module Jekyll
 
         throw "Content_type \'#{content_type_id}\' does not exist." if content_type.nil?
 
-        localization = site.config['contentful']['localization'] || [{locale: nil, url_prefix: ""}]      
-        
+        localization = site.config['contentful']['localization'] || [{locale: nil, url_prefix: ""}]
+
         # Get all entries of content type
 
         localization.each do |loc|
